@@ -8,3 +8,8 @@ coverage
 kohana_release
 nbproject
 build
+.settings
+.project
+*.log
+ehthumbs.db
+Thumbs.db

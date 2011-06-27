@@ -1,6 +1,3 @@
-[submodule "system"]
-	path = system
-	url = http://github.com/kohana/core.git
 [submodule "modules/codebench"]
 	path = modules/codebench
 	url = http://github.com/kohana/codebench.git
@@ -25,3 +22,9 @@
 [submodule "modules/unittest"]
 	path = modules/unittest
 	url = http://github.com/kohana/unittest.git
+[submodule "system"]
+	path = system
+	url = git@github.com:shoujs/kohanacore4sae.git
+[submodule "modules/oauth"]
+	path = modules/oauth
+	url = git@github.com:shoujs/oauth.git

@@ -46,7 +46,7 @@ spl_autoload_register(array('Kohana', 'auto_load'));
  * @see  http://php.net/spl_autoload_call
  * @see  http://php.net/manual/var.configuration.php#unserialize-callback-func
  */
-ini_set('unserialize_callback_func', 'spl_autoload_call');
+@ini_set('unserialize_callback_func', 'spl_autoload_call');
 
 // -- Configuration and initialization -----------------------------------------
 
@@ -61,11 +61,7 @@ I18n::lang('en-us');
  * Note: If you supply an invalid environment name, a PHP warning will be thrown
  * saying "Couldn't find constant Kohana::<INVALID_ENV_NAME>"
  */
-if (isset($_SERVER['KOHANA_ENV']))
-{
-	Kohana::$environment = constant('Kohana::'.strtoupper($_SERVER['KOHANA_ENV']));
-}
-
+Kohana::$environment = ($_SERVER['SERVER_NAME'] !== 'localhost') ? Kohana::PRODUCTION : Kohana::DEVELOPMENT;
 /**
  * Initialize Kohana, setting the default options.
  *
@@ -80,14 +76,20 @@ if (isset($_SERVER['KOHANA_ENV']))
  * - boolean  caching     enable or disable internal caching                 FALSE
  */
 Kohana::init(array(
-	'base_url'   => '/',
+	'base_url'   => Kohana::$environment === Kohana::PRODUCTION? '/' : '/kohana4sae/',
+	'cache_dir' => Kohana::$environment === Kohana::PRODUCTION? 'saemc://'.APPPATH.'cache/' : APPPATH.'cache/',
 ));
-
 /**
  * Attach the file write to logging. Multiple writers are supported.
  */
-Kohana::$log->attach(new Log_File(APPPATH.'logs'));
-
+if (Kohana::$environment === Kohana::PRODUCTION)
+{
+	Kohana::$log->attach(new Log_Sae);
+}
+else
+{
+	Kohana::$log->attach(new Kohana_Log_File(APPPATH.'logs'));
+}
 /**
  * Attach a file reader to config. Multiple readers are supported.
  */
@@ -105,6 +107,7 @@ Kohana::modules(array(
 	// 'orm'        => MODPATH.'orm',        // Object Relationship Mapping
 	// 'unittest'   => MODPATH.'unittest',   // Unit testing
 	// 'userguide'  => MODPATH.'userguide',  // User guide and API documentation
+		'oauth'     => MODPATH.'oauth'
 	));
 
 /**
